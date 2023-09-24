@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Collapse from "../components/Collapse";
 import { recipes } from "../data/data";
 import Card from "../components/Card";
 
 const Main = () => {
+  const [collapeIngredients, setcollapeIngredients] = useState(true);
+  const [collapeUstencils, setcollapeUstencils] = useState(true);
+  const [collapeAppliances, setcollapeAppliances] = useState(true);
+
   const ingredients = [];
   const appliances = [];
   const ustensils = [];
@@ -25,9 +29,24 @@ const Main = () => {
     <main>
       <section className="section-filter">
         <div className="collapse-container">
-          <Collapse title="Ingrédients" filters={uniqueIngredients} />
-          <Collapse title="Appareils" filters={uniqueAppliances} />
-          <Collapse title="Ustensiles" filters={uniqueUstensils} />
+          <Collapse
+            title="Ingrédients"
+            filters={uniqueIngredients}
+            showInput={collapeIngredients}
+            setShowInput={setcollapeIngredients}
+          />
+          <Collapse
+            title="Appareils"
+            filters={uniqueAppliances}
+            showInput={collapeAppliances}
+            setShowInput={setcollapeAppliances}
+          />
+          <Collapse
+            title="Ustensiles"
+            filters={uniqueUstensils}
+            showInput={collapeUstencils}
+            setShowInput={setcollapeUstencils}
+          />
         </div>
         <p className="text-recipe">1500 recettes</p>
       </section>
