@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../assets/logos/Logo.png";
 
 const Header = () => {
@@ -10,16 +10,16 @@ const Header = () => {
           CHERCHEZ PARMI PLUS DE 1500 RECETTES <br />
           DU QUOTIDIEN, SIMPLE ET DELICIEUSES
         </h1>
-        <div className="search-container">
+        <form className="search-container">
           <input
             type="search"
             className="search-bar"
             placeholder="Rechercher une recette, un ingrédient, ..."
           />
-          <button className="button-search">
-            <i class="fa-solid fa-magnifying-glass"></i>
+          <button type="submit" className="button-search">
+            <i className="fa-solid fa-magnifying-glass"></i>
           </button>
-        </div>
+        </form>
       </nav>
     </header>
   );
