@@ -54,6 +54,9 @@ nav {
   margin-top: 30px;
 }
 
+.max-height {
+  height: 45px;
+}
 .fa-magnifying-glass {
   font-size: 41px;
   color: white;
@@ -162,6 +165,7 @@ main {
   min-height: 45px;
   width: 100%;
   background-color: white;
+  border-radius: 10px;
 }
 .collapse-content::-webkit-scrollbar {
   width: 0px;
@@ -188,10 +192,12 @@ main {
 }
 
 .search-input-collapse input {
+  height: 35px;
   margin-left: 0;
   padding-left: 10px;
   width: 95%;
   border: none;
+  font-size: 16px;
 }
 
 .search-input-collapse input:active {
@@ -206,10 +212,18 @@ input[type="search"] {
   font-size: 15px;
   background-color: transparent;
   color: rgb(204, 204, 204);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: auto;
 }
 
 .none {
   display: none;
+}
+
+.show {
+  display: block;
 }
 
 .value-collapse {
@@ -217,14 +231,26 @@ input[type="search"] {
   border-radius: 10px;
 }
 
-.delete-value-selected {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 20px;
-  display: none;
+.value-selected {
+  display: block;
 }
+
+.delete-value-selected {
+  font-size: 20px;
+}
+
+.value-collapse-selected {
+  width: 185px;
+
+  padding: 9px 8px;
+  margin-top: 10px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffd15b;
+}
+
 /******* SECTION-CARDS******/
 
 /********  CARD *********/
@@ -320,4 +346,14 @@ input[type="search"] {
 
 .quantity {
   color: #7a7a7a;
+}
+
+/********* Reset Button ******/
+
+.reset-button {
+  cursor: pointer;
+  background-color: white;
+  border: none;
+  font-size: 20px;
+  font-weight: 700;
 }

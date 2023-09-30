@@ -1,8 +1,6 @@
 import React from "react";
 
 const Card = ({ img, recipe, time, ingredients, title }) => {
-  console.log(ingredients);
-
   return (
     <div className="card">
       <p className="time-text">{time} mn</p>
