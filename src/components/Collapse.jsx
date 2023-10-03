@@ -22,6 +22,12 @@ const Collapse = ({ title, items, onValueSelect }) => {
     onValueSelect(updatedValues);
   };
 
+  const handleRemoveFilter = (value) => {
+    const updatedValues = selectedValues.filter((item) => item !== value);
+    setSelectedValues(updatedValues);
+    onValueSelect(updatedValues);
+  };
+
   return (
     <div className="collapse " onClick={toggleCollapse}>
       <div className="title-collapse">
@@ -37,17 +43,26 @@ const Collapse = ({ title, items, onValueSelect }) => {
               onClick={(e) => stopPropagation(e)}
             ></i>
           </div>
-          <div className="value-collapse">
+          <div className="value-collapse" onClick={(e) => stopPropagation(e)}>
             {items.map((item, index) => (
-              <p
-                key={index}
-                className={`text-collapse-content ${
-                  selectedValues.includes(item) ? "selected" : ""
-                }`}
-                onClick={() => handleValueSelect(item)}
-              >
-                {item.charAt(0).toUpperCase() + item.slice(1)}{" "}
-              </p>
+              <div key={index} className="filter-item">
+                <p
+                  className={`text-collapse-content ${
+                    selectedValues.includes(item) ? "selected" : ""
+                  }`}
+                  onClick={() => handleValueSelect(item)}
+                >
+                  {item.charAt(0).toUpperCase() + item.slice(1)}{" "}
+                  {selectedValues.includes(item) && (
+                    <span
+                      className="remove-filter"
+                      onClick={() => handleRemoveFilter(item)}
+                    >
+                      X
+                    </span>
+                  )}
+                </p>
+              </div>
             ))}
           </div>
         </div>
