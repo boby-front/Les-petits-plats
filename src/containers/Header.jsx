@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import logo from "../assets/logos/Logo.png";
 
-const Header = ({ onSearch }) => {
+const Header = ({ onSearch, onResetFilters }) => {
   const [searchInput, setSearchInput] = useState("");
 
   const handleSearchSubmit = (e) => {
@@ -9,10 +9,11 @@ const Header = ({ onSearch }) => {
     onSearch(searchInput);
   };
 
-  // Gestionnaire d'événements pour réinitialiser la recherche
+  // Gestionnaire d'événements pour réinitialiser la recherche et les filtres
   const handleResetSearch = () => {
     setSearchInput("");
     onSearch("");
+    onResetFilters(); // Appel de la fonction pour réinitialiser les filtres
   };
 
   return (
@@ -20,7 +21,7 @@ const Header = ({ onSearch }) => {
       <img src={logo} alt="plat asiatique" className="logo" />
       <nav>
         <h1 className="title-nav">
-          CHERCHEZ PARMI PLUS DE 1500 RECETTES <br />
+          CHERCHEZ PARMI PLUS DE 50 RECETTES <br />
           DU QUOTIDIEN, SIMPLE ET DÉLICIEUSES
         </h1>
         <form className="search-container" onSubmit={handleSearchSubmit}>

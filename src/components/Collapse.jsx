@@ -1,15 +1,26 @@
 import React, { useState } from "react";
 import arrow from "../assets/logos/arrow.png";
 
-const Collapse = ({ title, items }) => {
+const Collapse = ({ title, items, onValueSelect }) => {
   const [collapse, setCollapse] = useState(true);
-  const [valueInput, setValueInput] = useState(null);
+  const [selectedValues, setSelectedValues] = useState([]);
 
   const toggleCollapse = () => {
     setCollapse(!collapse);
   };
 
   const stopPropagation = (e) => e.stopPropagation();
+
+  const handleValueSelect = (value) => {
+    const updatedValues = [...selectedValues];
+    if (updatedValues.includes(value)) {
+      updatedValues.splice(updatedValues.indexOf(value), 1);
+    } else {
+      updatedValues.push(value);
+    }
+    setSelectedValues(updatedValues);
+    onValueSelect(updatedValues);
+  };
 
   return (
     <div className="collapse " onClick={toggleCollapse}>
@@ -28,17 +39,17 @@ const Collapse = ({ title, items }) => {
           </div>
           <div className="value-collapse">
             {items.map((item, index) => (
-              <p key={index} className="text-collapse-content">
-                {item}
+              <p
+                key={index}
+                className={`text-collapse-content ${
+                  selectedValues.includes(item) ? "selected" : ""
+                }`}
+                onClick={() => handleValueSelect(item)}
+              >
+                {item.charAt(0).toUpperCase() + item.slice(1)}{" "}
               </p>
             ))}
           </div>
-        </div>
-      )}
-      {valueInput !== null && (
-        <div className="value-collapse-selected">
-          <p className="text-collapse-selected "></p>
-          <span className="delete-value-selected ">x</span>
         </div>
       )}
     </div>

@@ -4,96 +4,123 @@ import { recipes } from "../data/data";
 import Card from "../components/Card";
 
 const Main = ({ onSearchValue }) => {
+  const [selectedFilters, setSelectedFilters] = useState({
+    Ingredients: [],
+    Appareils: [],
+    Ustensiles: [],
+  });
   const [filteredRecipes, setFilteredRecipes] = useState([]);
-  const [uniqueIngredients, setUniqueIngredients] = useState([]);
-  const [uniqueAppliances, setUniqueAppliances] = useState([]);
-  const [uniqueUstensils, setUniqueUstensils] = useState([]);
+  const [uniqueKeywords, setUniqueKeywords] = useState({
+    Ingredients: [],
+    Appareils: [],
+    Ustensiles: [],
+  });
 
   useEffect(() => {
-    if (onSearchValue) {
-      const lowercaseSearchValue = onSearchValue.toLowerCase();
-      const filtered = recipes.filter((recipe) => {
-        // Filtrer par titre de recette
-        if (recipe.name.toLowerCase().includes(lowercaseSearchValue)) {
-          return true;
-        }
-        // Filtrer par description de recette
-        if (recipe.description.toLowerCase().includes(lowercaseSearchValue)) {
-          return true;
-        }
-        // Filtrer par ingrédients
-        for (const ingredient of recipe.ingredients) {
-          if (
+    const lowercaseSearchValue = onSearchValue.toLowerCase();
+
+    // Filtrer les recettes en fonction de la recherche
+    const filteredBySearch = recipes.filter((recipe) => {
+      return (
+        recipe.name.toLowerCase().includes(lowercaseSearchValue) ||
+        recipe.description.toLowerCase().includes(lowercaseSearchValue) ||
+        recipe.ingredients.some(
+          (ingredient) =>
             typeof ingredient.ingredient === "string" &&
             ingredient.ingredient.toLowerCase().includes(lowercaseSearchValue)
-          ) {
-            return true;
-          }
+        )
+      );
+    });
+
+    // Utiliser les filtres sélectionnés pour filtrer les recettes
+    const filteredBySelection = filteredBySearch.filter((recipe) => {
+      const selectedIngredients = selectedFilters.Ingredients;
+      const selectedAppliances = selectedFilters.Appareils;
+      const selectedUstensils = selectedFilters.Ustensiles;
+
+      const appliancesMatch =
+        selectedAppliances.length === 0 ||
+        selectedAppliances.includes(recipe.appliance.toLowerCase());
+
+      const ustensilsMatch =
+        selectedUstensils.length === 0 ||
+        recipe.ustensils.some((ustensil) =>
+          selectedUstensils.includes(ustensil.toLowerCase())
+        );
+
+      const ingredientsMatch =
+        selectedIngredients.length === 0 ||
+        selectedIngredients.every((selectedIngredient) =>
+          recipe.ingredients.some(
+            (recipeIngredient) =>
+              typeof recipeIngredient.ingredient === "string" &&
+              recipeIngredient.ingredient
+                .toLowerCase()
+                .includes(selectedIngredient.toLowerCase())
+          )
+        );
+
+      return ingredientsMatch && appliancesMatch && ustensilsMatch;
+    });
+
+    setFilteredRecipes(filteredBySelection);
+
+    // Extraire les mots-clés uniques
+    const uniqueKeywordsSet = {
+      Ingredients: new Set(),
+      Appareils: new Set(),
+      Ustensiles: new Set(),
+    };
+
+    filteredBySelection.forEach((recipe) => {
+      recipe.ingredients.forEach((ingredient) => {
+        if (typeof ingredient.ingredient === "string") {
+          uniqueKeywordsSet.Ingredients.add(
+            ingredient.ingredient.toLowerCase().trim()
+          );
         }
-        return false;
       });
-      setFilteredRecipes(filtered);
-
-      // Extraire les mots-clés uniques des ingrédients, des appareils et des ustensiles
-      const uniqueIngredientsSet = new Set();
-      const uniqueAppliancesSet = new Set();
-      const uniqueUstensilsSet = new Set();
-
-      filtered.forEach((recipe) => {
-        recipe.ingredients.forEach((ingredient) => {
-          if (typeof ingredient.ingredient === "string") {
-            uniqueIngredientsSet.add(ingredient.ingredient.toLowerCase());
-          }
-        });
-        uniqueAppliancesSet.add(recipe.appliance.toLowerCase());
-        recipe.ustensils.forEach((ustensil) => {
-          uniqueUstensilsSet.add(ustensil.toLowerCase());
-        });
+      uniqueKeywordsSet.Appareils.add(recipe.appliance.toLowerCase());
+      recipe.ustensils.forEach((ustensil) => {
+        uniqueKeywordsSet.Ustensiles.add(ustensil.toLowerCase());
       });
+    });
 
-      const uniqueIngredientsArray = [...uniqueIngredientsSet];
-      const uniqueAppliancesArray = [...uniqueAppliancesSet];
-      const uniqueUstensilsArray = [...uniqueUstensilsSet];
+    const uniqueKeywordsArray = {
+      Ingredients: [...uniqueKeywordsSet.Ingredients],
+      Appareils: [...uniqueKeywordsSet.Appareils],
+      Ustensiles: [...uniqueKeywordsSet.Ustensiles],
+    };
 
-      setUniqueIngredients(uniqueIngredientsArray);
-      setUniqueAppliances(uniqueAppliancesArray);
-      setUniqueUstensils(uniqueUstensilsArray);
-    } else {
-      setFilteredRecipes(recipes);
-      // Extraire les mots-clés uniques pour toutes les recettes lorsque la recherche est vide
-      const allIngredientsSet = new Set();
-      const allAppliancesSet = new Set();
-      const allUstensilsSet = new Set();
+    setUniqueKeywords(uniqueKeywordsArray);
+  }, [onSearchValue, selectedFilters]);
 
-      recipes.forEach((recipe) => {
-        recipe.ingredients.forEach((ingredient) => {
-          if (typeof ingredient.ingredient === "string") {
-            allIngredientsSet.add(ingredient.ingredient.toLowerCase());
-          }
-        });
-        allAppliancesSet.add(recipe.appliance.toLowerCase());
-        recipe.ustensils.forEach((ustensil) => {
-          allUstensilsSet.add(ustensil.toLowerCase());
-        });
-      });
-
-      const allIngredientsArray = [...allIngredientsSet];
-      const allAppliancesArray = [...allAppliancesSet];
-      const allUstensilsArray = [...allUstensilsSet];
-
-      setUniqueIngredients(allIngredientsArray);
-      setUniqueAppliances(allAppliancesArray);
-      setUniqueUstensils(allUstensilsArray);
-    }
-  }, [onSearchValue]);
+  const handleValueSelect = (type, values) => {
+    setSelectedFilters({
+      ...selectedFilters,
+      [type]: values,
+    });
+  };
 
   return (
     <main>
       <section className="section-filter">
         <div className="collapse-container">
-          <Collapse title="Ingrédients" items={uniqueIngredients} />
-          <Collapse title="Appareils" items={uniqueAppliances} />
-          <Collapse title="Ustensiles" items={uniqueUstensils} />
+          <Collapse
+            title="Ingrédients"
+            items={uniqueKeywords.Ingredients}
+            onValueSelect={(values) => handleValueSelect("Ingredients", values)}
+          />
+          <Collapse
+            title="Appareils"
+            items={uniqueKeywords.Appareils}
+            onValueSelect={(values) => handleValueSelect("Appareils", values)}
+          />
+          <Collapse
+            title="Ustensiles"
+            items={uniqueKeywords.Ustensiles}
+            onValueSelect={(values) => handleValueSelect("Ustensiles", values)}
+          />
         </div>
         <p className="text-recipe">{filteredRecipes.length} recettes</p>
       </section>
