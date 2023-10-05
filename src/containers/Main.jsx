@@ -4,12 +4,17 @@ import { recipes } from "../data/data";
 import Card from "../components/Card";
 
 const Main = ({ onSearchValue }) => {
+  // État pour stocker les filtres sélectionnés
   const [selectedFilters, setSelectedFilters] = useState({
     Ingredients: [],
     Appareils: [],
     Ustensiles: [],
   });
+
+  // État pour stocker les recettes filtrées
   const [filteredRecipes, setFilteredRecipes] = useState([]);
+
+  // État pour stocker les mots-clés uniques des filtres
   const [uniqueKeywords, setUniqueKeywords] = useState({
     Ingredients: [],
     Appareils: [],
@@ -17,9 +22,8 @@ const Main = ({ onSearchValue }) => {
   });
 
   useEffect(() => {
+    // Fonction de recherche : filtre les recettes en fonction de la valeur de recherche
     const lowercaseSearchValue = onSearchValue.toLowerCase();
-
-    // Filtrer les recettes en fonction de la recherche
     const filteredBySearch = recipes.filter((recipe) => {
       return (
         recipe.name.toLowerCase().includes(lowercaseSearchValue) ||
@@ -32,7 +36,7 @@ const Main = ({ onSearchValue }) => {
       );
     });
 
-    // Utiliser les filtres sélectionnés pour filtrer les recettes
+    // Fonction de filtrage : filtre les recettes en fonction des filtres sélectionnés
     const filteredBySelection = filteredBySearch.filter((recipe) => {
       const selectedIngredients = selectedFilters.Ingredients;
       const selectedAppliances = selectedFilters.Appareils;
@@ -63,9 +67,10 @@ const Main = ({ onSearchValue }) => {
       return ingredientsMatch && appliancesMatch && ustensilsMatch;
     });
 
+    // Met à jour les recettes filtrées
     setFilteredRecipes(filteredBySelection);
 
-    // Extraire les mots-clés uniques
+    // Obtient les mots-clés uniques des filtres
     const uniqueKeywordsSet = {
       Ingredients: new Set(),
       Appareils: new Set(),
@@ -86,6 +91,7 @@ const Main = ({ onSearchValue }) => {
       });
     });
 
+    // Met à jour les mots-clés uniques des filtres
     const uniqueKeywordsArray = {
       Ingredients: [...uniqueKeywordsSet.Ingredients],
       Appareils: [...uniqueKeywordsSet.Appareils],
@@ -95,6 +101,7 @@ const Main = ({ onSearchValue }) => {
     setUniqueKeywords(uniqueKeywordsArray);
   }, [onSearchValue, selectedFilters]);
 
+  // Fonction appelée lors de la sélection/désélection de valeurs dans les filtres
   const handleValueSelect = (type, values) => {
     setSelectedFilters({
       ...selectedFilters,
@@ -122,6 +129,7 @@ const Main = ({ onSearchValue }) => {
             onValueSelect={(values) => handleValueSelect("Ustensiles", values)}
           />
         </div>
+
         <p className="text-recipe">{filteredRecipes.length} recettes</p>
       </section>
 

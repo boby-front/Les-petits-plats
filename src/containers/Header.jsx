@@ -4,16 +4,17 @@ import logo from "../assets/logos/Logo.png";
 const Header = ({ onSearch, onResetFilters }) => {
   const [searchInput, setSearchInput] = useState("");
 
+  // Fonction appelée lors de la soumission du formulaire de recherche
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     onSearch(searchInput);
   };
 
-  // Gestionnaire d'événements pour réinitialiser la recherche et les filtres
+  // Fonction appelée pour réinitialiser la recherche et les filtres
   const handleResetSearch = () => {
     setSearchInput("");
     onSearch("");
-    onResetFilters(); // Appel de la fonction pour réinitialiser les filtres
+    onResetFilters();
   };
 
   return (
